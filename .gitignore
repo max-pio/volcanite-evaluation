@@ -1,0 +1,8 @@
+__pycache__/*
+.venv/*
+core
+vulkan_pipeline_cache.data
+volcanite-eval-setup.txt
+results/*
+*results/*
+*.log
