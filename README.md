@@ -85,6 +85,7 @@ If your system does not meet these requirements, consider downloading only the s
 (i.e. omitting `--big-data` in the data set download script).
 Some evaluations will create many large files (videos, compressed volumes, etc.) in `./results`.
 Make sure that enough free disk space is available on the drive where the evaluation directory located.
+To download a single data set, use the `--only` argument.
 
 ### Optional: Fixing GPU clock speeds
 

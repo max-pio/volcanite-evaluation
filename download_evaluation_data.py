@@ -256,10 +256,11 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     csgv_directory = Path(args.directory)
+    eval_src_dir = Path(__file__).parent
     if args.volcanite_src:
         volcanite_src_dir = Path(args.volcanite_src)
     else:
-        volcanite_src_dir = Path(__file__).parent
+        volcanite_src_dir = eval_src_dir
         while(volcanite_src_dir.exists() and
               not (volcanite_src_dir / "volcanite" / "src" / "bin" / "volcanite.cpp").exists()):
             volcanite_src_dir = volcanite_src_dir.parent
@@ -272,13 +273,13 @@ if __name__ == '__main__':
             print("Volcanite source directory could not be found. Provide as --volcanite-src /path/to/volcanite/")
             exit(1)
 
-    config_dir = Path(__file__).parent / Path("config")
+    config_dir = eval_src_dir / Path("config")
     if not config_dir.exists():
         print(f"Directory does not contain configuration subdirectory {config_dir}.")
         exit(2)
 
     # write the paths to the config file
-    setup_file = volcanite_src_dir / "eval" / ve.VolcaniteArg.get_path_setup_filename()
+    setup_file = eval_src_dir / ve.VolcaniteArg.get_path_setup_filename()
     if setup_file.exists():
         print(f"Overwriting evaluation paths file {setup_file}.")
         # sleep(2)
@@ -300,16 +301,24 @@ if __name__ == '__main__':
         print("----------- AZBA ----------- ")
         name = "azba"
         cur_dir = csgv_directory / Path(name)
+        cur_dir.mkdir(parents=True, exist_ok=True)
         if not (csgv_directory / (name + ".csgv")).exists() or args.overwrite:
-            if not (cur_dir / "azba.nii.gz").exists():
-                print(f"AZBA source data cannot automatically downloaded. Skipping.\n"
-                      f"  Please download https://datadryad.org/downloads/file_stream/1098598 azba.nii.gz file to directory {cur_dir} and run again.")
-                sleep(5)
-            else:
-                write_citation(csgv_directory, name)
-                # TODO: DataDryad now prohibits downloads over the API for anonymous users. Provide 2021-08-22_AZBA_segmentation.nii.gz otherwise.
+            # provide azba.hdf5 input file either from volcanite data directory or after manual download
+            if (eval_src_dir / "datasets/2021-08-22_AZBA_segmentation.hdf5").exists():
+                print(f"Copying azba.hdf5 from {eval_src_dir / "datasets/2021-08-22_AZBA_segmentation.hdf5"}")
+                shutil.copy(eval_src_dir / "datasets/2021-08-22_AZBA_segmentation.hdf5", cur_dir / "azba.hdf5")
+            elif (cur_dir / "azba.nii.gz").exists():
+                # DataDryad now prohibits downloads over the API for anonymous users. Provide 2021-08-22_AZBA_segmentation.nii.gz otherwise.
                 # download_file("https://datadryad.org/api/v2/files/1098598/download", cur_dir, "azba.nii.gz", overwrite=args.overwrite)
-                vc.convert_volume(cur_dir / "azba.nii.gz", cur_dir / "azba.hdf5")
+                print(f"Converting azba.hdf5 from {cur_dir / "2021-08-22_AZBA_segmentation.nii.gz"}")
+                vc.convert_volume(cur_dir / "2021-08-22_AZBA_segmentation.nii.gz", cur_dir / "azba.hdf5")
+            else:
+                print(f"AZBA source data cannot automatically downloaded. Skipping.\n"
+                      f"  Please download https://datadryad.org/downloads/file_stream/1098598 2021-08-22_AZBA_segmentation.nii.gz file to directory {cur_dir} and run again.")
+                sleep(5)
+
+            if (cur_dir / "azba.hdf5").exists():
+                write_citation(csgv_directory, name)
                 ret = ve.VolcaniteExec.run_volcanite(volcanite_bin_dir,
                                                     f"--headless -c {csgv_directory / (name + ".csgv")}"
                                                     + " " + ve.VolcaniteArg.concat_arg_string(data_specific_compression_args(name)) + \
