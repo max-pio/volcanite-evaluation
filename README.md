@@ -1,6 +1,9 @@
 # Volcanite Evaluation Scripts
 
-This directory contains several evaluation python scripts that generate the results for the main Volcanite paper.
+▶️ **The Volcanite main repository can be found at [max-pio/volcanite](https://github.com/max-pio/volcanite)** ◀️
+
+This repository contains several evaluation python scripts that generate the results for the main Volcanite paper.
+
 The structure of the directory is as follows:
 * `./` The root contains all python scripts for executing evaluations and downloading input data,
 * `./volcanite-eval-setup.txt` is created by the data downloader and contains file paths to this directory and the volcanite binary,
