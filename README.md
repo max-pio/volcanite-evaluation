@@ -32,7 +32,7 @@ And place this volcanite-evalution directory inside its source tree.
 We recommend to place it in `<volcanite-root-src-dir>/eval/`.
 
 You need to install the Volcanite build dependencies (see its [doc/Setup.md](https://github.com/max-pio/dev-volcanite/blob/main/doc/Setup.md)), including the optional hdf5 libraries.
-The evaluation scripts require python and the Volcanite python package located in `<volcanite-src-root-dir>/python/volcanite/` to be installed.
+The evaluation scripts require python and the Volcanite python package located in `<volcanite-src-root-dir>/python/volcanite/` to be installed (where `volcanite-src-root-dir` is `../../` if setup as above).
 Volcanite must be built with `Release` build type in `<volcanite-src-root-dir>/cmake-build-release`:
 ```bash
 cd <volcanite-src-root-dir>
