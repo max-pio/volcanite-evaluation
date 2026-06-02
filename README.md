@@ -125,6 +125,12 @@ Afterward, results can be found in the [results/](./results) subdirectory.
 If not all data sets could be downloaded or were requested for download, some result tables may return missing entries.
 In general, the scripts should ignore evaluation runs that fail due to non-existing data sets.
 
+## Running the additional VTK Evaluations
+
+To generate the VTK / ParaView render and preprocessing timing evaluation results, you need to clone the separate [volcanite-evaluation-vtk](https://github.com/max-pio/volcanite-evaluation-vtk) repository.
+The VTK evaluation scripts (Linux) read all configuration, data set, and Volcanite build locations from the `volcanite-eval-setup.txt` file.
+See the ReadMe inside that project for details.
+
 ## Plotting
 After gathering all results, the plots can be created with the scripts in [plots/](./plots).
 Again, a shell script `./plt-all.sh` will create all plots.
