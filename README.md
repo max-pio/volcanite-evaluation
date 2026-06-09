@@ -80,15 +80,21 @@ In addition, the following arguments exist as well:
 
 To be able to execute *all* evaluation scripts, the following arguments are mandatory, (except `--preview` and `--no-abort` which are just recommended):
 ```bash
-python3 download_evaluation_data.py /your/data/dir --big-data --keep --single-chunk-copy --preview --no-abort
+python3 download_evaluation_data.py <your/data/dir> --big-data --keep --single-chunk-copy --preview --no-abort
 ```
  
+To download a single data set, use the `--only` argument.
 The evaluations assume a system with at least 48 GB RAM, a GPU with at least 16 GB VRAM, and at least 1 TB of free storage space in the data download directory.
-If your system does not meet these requirements, consider downloading only the smaller data
-(i.e. omitting `--big-data` in the data set download script).
 Some evaluations will create many large files (videos, compressed volumes, etc.) in `./results`.
 Make sure that enough free disk space is available on the drive where the evaluation directory located.
-To download a single data set, use the `--only` argument.
+If your system does not meet these requirements, consider downloading only the smaller data
+(omitting `--big-data` in the data set download script) or only selected data sets (using `--only`).
+
+For example, to run the evaluations only on the two smallest data sets (azba and xtm-battery), download only
+```bash
+python3 download_evaluation_data.py <your/data/dir> --keep --preview --no-abort --only azba
+python3 download_evaluation_data.py <your/data/dir> --keep --preview --no-abort --only xtm-battery
+```
 
 ### Optional: Fixing GPU clock speeds
 
@@ -121,7 +127,7 @@ These can be run through `./run-ablation-delta.sh`.
 
 If entry- or exit-commands require root privileges (e.g. fixing GPU clocks), execute ./run-all.sh with sudo as well.
 
-Afterward, results can be found in the [results/](./results) subdirectory.
+Afterward, results can be found in the `./results` subdirectory.
 If not all data sets could be downloaded or were requested for download, some result tables may return missing entries.
 In general, the scripts should ignore evaluation runs that fail due to non-existing data sets.
 
@@ -155,4 +161,4 @@ See the README inside that project for details.
 ## Plotting
 After gathering all results, the plots can be created with the scripts in [plots/](./plots).
 Again, a shell script `./plt-all.sh` will create all plots.
-Afterward, the PDF plot files are found in [results/plots/](./results/plots).
+Afterward, the PDF plot files are found in `./results/plots/`.
