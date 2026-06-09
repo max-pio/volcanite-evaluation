@@ -44,6 +44,7 @@ for cam in ["image", "video"]:
 
         print(f"  Plotting shading times for {cam} {data}")
 
+        all_empty = True
         for i, shading in enumerate(shading_mode_ids):
             row = df[(df['Data Set'] == data) & (df['Shading Mode'] == shading)]
             if row.empty:
@@ -52,10 +53,13 @@ for cam in ["image", "video"]:
                 max_ms[i] = float('nan')
                 sdv_ms[i] = float('nan')
             else:
+                all_empty = False
                 avg_ms[i] = row['frame avg [ms]'].iloc[0]
                 min_ms[i] = row['frame min [ms]'].iloc[0]
                 max_ms[i] = row['frame max [ms]'].iloc[0]
                 sdv_ms[i] = row['stdv'].iloc[0]
+        if all_empty:
+            continue
 
         fig, ax = plt.subplots(constrained_layout=True, figsize=(4,2.5))
         plot_timings(x, avg_ms, errors=sdv_ms, xticklabels=shading_mode_ids, barwidth=0.4,
