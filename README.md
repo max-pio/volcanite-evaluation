@@ -31,14 +31,12 @@ If not already present, first clone the Volcanite repository:
 ```
 git clone git@github.com:max-pio/volcanite.git
 ```
-And place this volcanite-evalution directory inside its source tree.
-We recommend to place it in `<volcanite-root-src-dir>/eval/`.
 
-You need to install the Volcanite build dependencies (see its [doc/Setup.md](https://github.com/max-pio/dev-volcanite/blob/main/doc/Setup.md)), including the optional hdf5 libraries.
+You need to install the Volcanite build dependencies (see its [doc/Setup.md](https://github.com/max-pio/volcanite/blob/main/doc/Setup.md)), including the optional hdf5 libraries.
 The evaluation scripts require python and the Volcanite python package located in `<volcanite-src-root-dir>/python/volcanite/` to be installed (where `volcanite-src-root-dir` is `../../` if setup as above).
 Volcanite must be built with `Release` build type in `<volcanite-src-root-dir>/cmake-build-release`:
 ```bash
-cd <volcanite-src-root-dir>
+cd ./volcanite                                 # cd <volcanite-src-root-dir>
 mkdir cmake-build-release && cd cmake-build-release
 cmake -DCMAKE_BUILD_TYPE=Release .. && cmake --build . -j --target volcanite
 ```
@@ -48,13 +46,20 @@ Install python dependencies. On Ubuntu:
 sudo apt update && sudo apt install python3-venv python3-dev build-essential
 ```
 
+We recommend to place this volcanite-evalution repository's directory in Volcanite's source tree at `<volcanite-root-src-dir>/eval/`:
+```bash
+cd ../eval      # cd <volcanite-src-root-dir>/eval
+git clone git@github.com:max-pio/volcanite-evaluation
+```
+
 Install packages inside a local python virtual environment:
 ```bash
+cd ./volcanite-evaluation
 python3 -m venv ./.venv
 source .venv/bin/activate
 pip install --upgrade pip
 pip install pandas numpy matplotlib
-pip install <volcanite-src-root-dir>/python/volcanite[all]
+pip install ../../python/volcanite[all]   # <volcanite-src-root-dir>/python/volcanite[all]
 ```
 
 ### Data Set Download
@@ -92,9 +97,10 @@ If your system does not meet these requirements, consider downloading only the s
 
 For example, to run the evaluations only on the two smallest data sets (azba and xtm-battery), download only
 ```bash
-python3 download_evaluation_data.py <your/data/dir> --keep --preview --no-abort --only azba
-python3 download_evaluation_data.py <your/data/dir> --keep --preview --no-abort --only xtm-battery
+python3 download_evaluation_data.py <your/data/dir> --keep --preview --single-chunk-copy --no-abort --only azba
+python3 download_evaluation_data.py <your/data/dir> --keep --preview --single-chunk-copy --no-abort --only xtm-battery
 ```
+All but the first script runs will warn that `<your/data/dir>` is not empty which can be ignored.
 
 ### Optional: Fixing GPU clock speeds
 
@@ -147,18 +153,39 @@ A total setup of the four repositories (`volcanite`, `volcanite-evaluation`, `vo
 ```
 
 ### VTK Evaluations
-
 To generate the VTK / ParaView render and preprocessing timing evaluation results, you need to clone the separate [volcanite-evaluation-vtk](https://github.com/max-pio/volcanite-evaluation-vtk) repository.
 The VTK evaluation scripts (Linux) read all configuration, data sets, and Volcanite build locations from the `volcanite-eval-setup.txt` file.
 See the README inside that project for details.
+```bash
+cd <volcanite-src-root-dir>/..
+git clone git@github.com:max-pio/volcanite-evaluation-vtk.git
+cd volcanite-evaluation-vtk
+# follow volcanite-evaluation-vtk README.md
+```
 
 ### Neuroglancer Evaluations
 
 To generate the Neuroglancer preprocessing timing evaluation results, you need to clone the separate [volcanite-evaluation-ng](https://github.com/max-pio/volcanite-evaluation-ng) repository.
 The Neuroglancer evaluation scripts (Linux) read the data sets path from the `volcanite-eval-setup.txt` file.
 See the README inside that project for details.
+```bash
+cd <volcanite-src-root-dir>/..
+git clone git@github.com:max-pio/volcanite-evaluation-ng.git
+cd volcanite-evaluation-ng
+# follow volcanite-evaluation-ng README.md
+```
 
 ## Plotting
+If VTK and Neuroglancer results were created, their result directories (`vtk-eval` and `neuroglancer-eval`) must be copied to `./results/vtk-eval/` and `./results/neuroglancer-eval/` respectively.
+
 After gathering all results, the plots can be created with the scripts in [plots/](./plots).
-Again, a shell script `./plt-all.sh` will create all plots.
+
+Execute the shell script `./plots/plt-all.sh` (which will source the volcanite-evaluation .venv) to create all plots:
+```bash
+cd <volcanite-evaluation>/
+# optional, copy VTK and Neuroglancer results:
+# cp <volcanite-evaluation-vtk>/vtk-eval ./results/
+# cp <volcanite-evaluation-ng>/neuroglancer-eval ./results/
+./plots/plt-all.sh
+```
 Afterward, the PDF plot files are found in `./results/plots/`.

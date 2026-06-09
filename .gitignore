@@ -6,3 +6,4 @@ volcanite-eval-setup.txt
 results/*
 *results/*
 *.log
+.idea/**
