@@ -125,11 +125,32 @@ Afterward, results can be found in the [results/](./results) subdirectory.
 If not all data sets could be downloaded or were requested for download, some result tables may return missing entries.
 In general, the scripts should ignore evaluation runs that fail due to non-existing data sets.
 
-## Running the additional VTK Evaluations
+## Running the additional VTK and Neuroglancer Evaluations
+
+The VTK and Neuroglancer evaluations are located in separate repositories for higher code clarity. 
+Since the VTK and Neuroglancer evaluations do not operate on the compressed .csgv files, you need to previde the original volumes as input (i.e. use `download_evaluation_data.py` with `--keep`).
+The VTK and Neuroglancer evaluations are standalone (except requiring directory paths from the `volcanite-eval-setup.txt` for rendering configuration and data set input) and do not have to be placed inside the file hierarchy of the main Volcanite paper.
+A total setup of the four repositories (`volcanite`, `volcanite-evaluation`, `volcanite-evaluation-vtk`, `volcanite-evaluation-ng`) could be organized like this:
+
+```
+├── volcanite/
+│   └── eval/
+│       └── volcanite-evaluation/
+├── volcanite-evaluation-vtk/
+└── volcanite-evaluation-ng/
+```
+
+### VTK Evaluations
 
 To generate the VTK / ParaView render and preprocessing timing evaluation results, you need to clone the separate [volcanite-evaluation-vtk](https://github.com/max-pio/volcanite-evaluation-vtk) repository.
-The VTK evaluation scripts (Linux) read all configuration, data set, and Volcanite build locations from the `volcanite-eval-setup.txt` file.
-See the ReadMe inside that project for details.
+The VTK evaluation scripts (Linux) read all configuration, data sets, and Volcanite build locations from the `volcanite-eval-setup.txt` file.
+See the README inside that project for details.
+
+### Neuroglancer Evaluations
+
+To generate the Neuroglancer preprocessing timing evaluation results, you need to clone the separate [volcanite-evaluation-ng](https://github.com/max-pio/volcanite-evaluation-ng) repository.
+The Neuroglancer evaluation scripts (Linux) read the data sets path from the `volcanite-eval-setup.txt` file.
+See the README inside that project for details.
 
 ## Plotting
 After gathering all results, the plots can be created with the scripts in [plots/](./plots).
