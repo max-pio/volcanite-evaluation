@@ -12,10 +12,11 @@
 #
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
+import select
 from pathlib import Path
 import os.path
-from time import sleep
+from time import sleep, time
+from sys import stdin
 
 import argparse
 import numpy as np
@@ -255,7 +256,38 @@ if __name__ == '__main__':
     parser.add_argument("--single-chunk-copy", action="store_true", help="Create single-chunk copies of medium sized chunked data sets.")
     args = parser.parse_args()
 
-    csgv_directory = Path(args.directory)
+    csgv_directory = Path(args.directory).absolute()
+    # create download directory
+    csgv_directory.mkdir(parents=True, exist_ok=True)
+    if any(csgv_directory.iterdir()):
+        print(f"Warning! Data directory {csgv_directory} is not empty.")
+
+        start = time()
+        user_input = None
+        remaining = 10
+
+        while time() - start < 10:
+            # Print the message with remaining seconds (using \r to overwrite the line)
+            print(f"\r[Auto-continue in {int(remaining):2} seconds] Continue downloading data? [y/N]: ",
+                  end="", flush=True)
+
+            if stdin in select.select([stdin], [], [], 0.5)[0]:
+                line = stdin.readline().strip().lower()
+                user_input = line
+                break
+
+            # Update remaining seconds
+            remaining = 10 - (time() - start)
+            if remaining <= 0:
+                remaining = 0
+
+        if user_input is not None:
+            if user_input == "y":
+                pass  # Continue immediately
+            else:
+                raise SystemExit("Cancelled by user.")
+
+
     eval_src_dir = Path(__file__).parent
     if args.volcanite_src:
         volcanite_src_dir = Path(args.volcanite_src)
@@ -289,9 +321,6 @@ if __name__ == '__main__':
         file.write("csgv-dir: " + str(csgv_directory.absolute()) + "\n")
         file.write("entry-command: \n")
         file.write("exit-command: \n")
-
-    # create download directory
-    csgv_directory.mkdir(parents=True, exist_ok=True);
 
     # BUILD VOLCANITE --------------------------------------------------------------------------------------------------
     volcanite_bin_dir = ve.VolcaniteExec.build_volcanite(volcanite_src_dir / "cmake-build-release")
