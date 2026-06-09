@@ -41,9 +41,7 @@ for cam in ["image", "video"]:
     df = pd.read_csv(shading_csv, comment="#")
 
     for data in data_set_ids:
-
-        print(f"  Plotting shading times for {cam} {data}")
-
+        # check if any shading mode has a measurement, skip if not
         all_empty = True
         for i, shading in enumerate(shading_mode_ids):
             row = df[(df['Data Set'] == data) & (df['Shading Mode'] == shading)]
@@ -60,6 +58,8 @@ for cam in ["image", "video"]:
                 sdv_ms[i] = row['stdv'].iloc[0]
         if all_empty:
             continue
+
+        print(f"  Plotting shading times for {cam} {data}")
 
         fig, ax = plt.subplots(constrained_layout=True, figsize=(4,2.5))
         plot_timings(x, avg_ms, errors=sdv_ms, xticklabels=shading_mode_ids, barwidth=0.4,
