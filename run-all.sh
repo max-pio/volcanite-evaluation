@@ -50,6 +50,9 @@ sleep 30
 echo "<<<<<<< csgv-eval.py >>>>>>>"
 python3 -u ./csgv-eval.py
 sleep 30
+echo "<<<<<<< filesize-eval.py >>>>>>>"
+python3 -u ./filesize-eval.py
+sleep 30
 echo "<<<<<<< compression-eval.py >>>>>>>"
 python3 -u ./compression-eval.py
 sleep 30
