@@ -44,7 +44,7 @@ for X_AXIS, xlabel, pdfname  in zip(["Labels", "Brick Labels avg"],
         ax.scatter(data_df[data_df["Orig bits/voxel"] == orig_b][X_AXIS],
                    data_df[data_df["Orig bits/voxel"] == orig_b]["CSGV bits/voxel"],
                    color=volcanite_colors[i], edgecolors=volcanite_colors_dark[i], s=50)
-    ax.legend(labels=["Orig  8b", "Orig 16b", "Orig 32B"])
+    ax.legend(labels=["Orig  8b", "Orig 16b", "Orig 32b"])
     ax.set_xscale("log")
     if pdfname == "total":
         ax.set_xticks(np.logspace(0, 6, 4))
